@@ -4,10 +4,12 @@ import (
 	"errors"
 
 	"github.com/lelakatos/gator/internal/config"
+	"github.com/lelakatos/gator/internal/database"
 )
 
 type state struct {
 	cfg *config.Config
+	db  *database.Queries
 }
 
 type command struct {

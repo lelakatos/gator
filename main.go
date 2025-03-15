@@ -1,10 +1,13 @@
 package main
 
 import (
+	"database/sql"
 	"log"
 	"os"
 
 	"github.com/lelakatos/gator/internal/config"
+	"github.com/lelakatos/gator/internal/database"
+	_ "github.com/lib/pq"
 )
 
 func main() {
@@ -13,12 +16,23 @@ func main() {
 		log.Fatalf("error reading config: %v", err)
 	}
 
-	s := state{&cfg}
+	db, err := sql.Open("postgres", cfg.DbURL)
+	if err != nil {
+		log.Fatalf("error loading the database: %v", err)
+	}
+	dbQueries := database.New(db)
+
+	currentState := state{&cfg, dbQueries}
 	cmds := commands{cmds: make(map[string]func(*state, command) error)}
 
 	err = cmds.register("login", handlerLogin)
 	if err != nil {
 		log.Fatalf("error registering login command: %v", err)
+	}
+
+	err = cmds.register("register", handlerRegister)
+	if err != nil {
+		log.Fatalf("error registering the register command: %v", err)
 	}
 
 	args := os.Args
@@ -31,7 +45,7 @@ func main() {
 		args: args[2:],
 	}
 
-	err = cmds.run(&s, cmd)
+	err = cmds.run(&currentState, cmd)
 	if err != nil {
 		log.Fatalf("error running the command: %v", err)
 	}
