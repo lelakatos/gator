@@ -35,6 +35,11 @@ func main() {
 		log.Fatalf("error registering the register command: %v", err)
 	}
 
+	err = cmds.register("reset", handlerReset)
+	if err != nil {
+		log.Fatalf("error resetting the database: %v", err)
+	}
+
 	args := os.Args
 	if len(args) < 2 {
 		log.Fatalf("not enough arguments passed in")

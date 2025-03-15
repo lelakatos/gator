@@ -55,3 +55,18 @@ func handlerRegister(s *state, cmd command) error {
 	return nil
 
 }
+
+func handlerReset(s *state, cmd command) error {
+	if len(cmd.args) != 0 {
+		return errors.New("no arguments needed for reset")
+	}
+
+	err := s.db.Reset(context.Background())
+	if err != nil {
+		return err
+	}
+
+	fmt.Println("Resetting the database was successful")
+
+	return nil
+}
