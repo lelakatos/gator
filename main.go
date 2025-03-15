@@ -40,6 +40,11 @@ func main() {
 		log.Fatalf("error resetting the database: %v", err)
 	}
 
+	err = cmds.register("users", handlerUsers)
+	if err != nil {
+		log.Fatalf("error getting the user list: %v", err)
+	}
+
 	args := os.Args
 	if len(args) < 2 {
 		log.Fatalf("not enough arguments passed in")

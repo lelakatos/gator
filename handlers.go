@@ -58,7 +58,7 @@ func handlerRegister(s *state, cmd command) error {
 
 func handlerReset(s *state, cmd command) error {
 	if len(cmd.args) != 0 {
-		return errors.New("no arguments needed for reset")
+		return errors.New("no arguments allowed for reset")
 	}
 
 	err := s.db.Reset(context.Background())
@@ -67,6 +67,27 @@ func handlerReset(s *state, cmd command) error {
 	}
 
 	fmt.Println("Resetting the database was successful")
+
+	return nil
+}
+
+func handlerUsers(s *state, cmd command) error {
+	if len(cmd.args) != 0 {
+		return errors.New("no arguments allowed for users")
+	}
+
+	users, err := s.db.GetUsers(context.Background())
+	if err != nil {
+		return err
+	}
+
+	for _, user := range users {
+		if user.Name == s.cfg.CurrentUserName {
+			fmt.Printf("* %s (current)\n", user.Name)
+		} else {
+			fmt.Printf("* %s\n", user.Name)
+		}
+	}
 
 	return nil
 }
