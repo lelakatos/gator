@@ -26,12 +26,7 @@ func handlerAgg(s *state, cmd command) error {
 	return nil
 }
 
-func handlerAddFeed(s *state, cmd command) error {
-	currUser, err := s.db.GetUser(context.Background(), s.cfg.CurrentUserName)
-	if err != nil {
-		return err
-	}
-
+func handlerAddFeed(s *state, cmd command, currUser database.User) error {
 	if len(cmd.args) != 2 {
 		return errors.New("usage: addfeed <name> <url>")
 	}
@@ -82,7 +77,7 @@ func handlerGetFeeds(s *state, cmd command) error {
 	return nil
 }
 
-func handlerFollow(s *state, cmd command) error {
+func handlerFollow(s *state, cmd command, user database.User) error {
 	if len(cmd.args) != 1 {
 		return errors.New("usage: follow <url>")
 	}
@@ -90,11 +85,6 @@ func handlerFollow(s *state, cmd command) error {
 	url := cmd.args[0]
 
 	feed, err := s.db.GetFeedByURL(context.Background(), url)
-	if err != nil {
-		return err
-	}
-
-	user, err := s.db.GetUser(context.Background(), s.cfg.CurrentUserName)
 	if err != nil {
 		return err
 	}
@@ -116,14 +106,9 @@ func handlerFollow(s *state, cmd command) error {
 	return nil
 }
 
-func handlerFollowing(s *state, cmd command) error {
+func handlerFollowing(s *state, cmd command, user database.User) error {
 	if len(cmd.args) != 0 {
 		return errors.New("no arguments allowed for following command")
-	}
-
-	user, err := s.db.GetUser(context.Background(), s.cfg.CurrentUserName)
-	if err != nil {
-		return err
 	}
 
 	followedFeedNames, err := s.db.GetFeedFollowsForUser(context.Background(), user.ID)
