@@ -10,6 +10,11 @@ import (
 	_ "github.com/lib/pq"
 )
 
+type state struct {
+	cfg *config.Config
+	db  *database.Queries
+}
+
 func main() {
 	cfg, err := config.Read()
 	if err != nil {
@@ -37,12 +42,37 @@ func main() {
 
 	err = cmds.register("reset", handlerReset)
 	if err != nil {
-		log.Fatalf("error resetting the database: %v", err)
+		log.Fatalf("error registering reset: %v", err)
 	}
 
 	err = cmds.register("users", handlerUsers)
 	if err != nil {
-		log.Fatalf("error getting the user list: %v", err)
+		log.Fatalf("error registering user list command: %v", err)
+	}
+
+	err = cmds.register("agg", handlerAgg)
+	if err != nil {
+		log.Fatalf("error registering the agg command: %v", err)
+	}
+
+	err = cmds.register("addfeed", handlerAddFeed)
+	if err != nil {
+		log.Fatalf("error registering addfeed command: %v", err)
+	}
+
+	err = cmds.register("feeds", handlerGetFeeds)
+	if err != nil {
+		log.Fatalf("error registering feeds command: %v", err)
+	}
+
+	err = cmds.register("follow", handlerFollow)
+	if err != nil {
+		log.Fatalf("error registering follow command: %v", err)
+	}
+
+	err = cmds.register("following", handlerFollowing)
+	if err != nil {
+		log.Fatalf("error registering following command: %v", err)
 	}
 
 	args := os.Args
