@@ -80,6 +80,11 @@ func main() {
 		log.Fatalf("error registering unfollow command: %v", err)
 	}
 
+	err = cmds.register("browse", middlewareLoggedIn(handlerBrowse))
+	if err != nil {
+		log.Fatalf("error regstering browse command: %v", err)
+	}
+
 	args := os.Args
 	if len(args) < 2 {
 		log.Fatalf("not enough arguments passed in")
