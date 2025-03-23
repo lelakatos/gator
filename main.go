@@ -75,6 +75,11 @@ func main() {
 		log.Fatalf("error registering following command: %v", err)
 	}
 
+	err = cmds.register("unfollow", middlewareLoggedIn(handlerUnfollow))
+	if err != nil {
+		log.Fatalf("error registering unfollow command: %v", err)
+	}
+
 	args := os.Args
 	if len(args) < 2 {
 		log.Fatalf("not enough arguments passed in")
