@@ -81,7 +81,7 @@ func scrapeFeeds(s *state) error {
 
 	fmt.Printf("Successfully fetched feed: %s\n", feedContents.Channel.Title)
 	for i, entry := range feedContents.Channel.Item {
-		fmt.Printf("Entry %v: %s", i, entry.Title)
+		fmt.Printf("Entry %v: %s\n", i, entry.Title)
 	}
 
 	return nil

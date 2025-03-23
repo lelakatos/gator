@@ -11,19 +11,22 @@ import (
 )
 
 func handlerAgg(s *state, cmd command) error {
-	if len(cmd.args) != 0 {
-		return errors.New("no arguments allowed for agg")
+	if len(cmd.args) != 1 {
+		return errors.New("usage: agg <duration string>")
 	}
 
-	const testURL string = "https://www.wagslane.dev/index.xml"
-
-	feed, err := fetchFeed(context.Background(), testURL)
+	tickerTime, err := time.ParseDuration(cmd.args[0])
 	if err != nil {
 		return err
 	}
 
-	fmt.Printf("Fetched successfully: %+v\n", feed)
-	return nil
+	fmt.Printf("Scraping fields every %v\n", tickerTime)
+
+	ticker := time.NewTicker(tickerTime)
+
+	for ; ; <-ticker.C {
+		scrapeFeeds(s)
+	}
 }
 
 func handlerAddFeed(s *state, cmd command, currUser database.User) error {
